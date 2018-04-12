@@ -75,7 +75,7 @@ public class WordProcessor {
 	/**
 	 * Adjacency between word1 and word2 is defined by:
 	 * if the difference between word1 and word2 is of
-	 * 	1 char replacement
+	 *  1 char replacement
 	 *  1 char addition
 	 *  1 char deletion
 	 * then 
@@ -128,30 +128,29 @@ public class WordProcessor {
 	    }
 	    
 	    if (word1.length() != word2.length()) {
-    	    // Check addition and deletion
-    	    int diffCharIndex = 0;
-    	    String longerWord = word1.length() > word2.length() ? word1 : word2;
-    	    String shorterWord = word1.length() < word2.length() ? word1 : word2;
-    	    
-    	    // Look for the index where the two words are starting to differ
-    	    for (int i = 0; i < longerWord.length(); i++) {
-    	        if (word1.charAt(i) != word2.charAt(i)) {
-    	            diffCharIndex = i;
-    	            break;
-    	        }
-    	    }
-    	    
-    	    String beforeDiffChar1 = longerWord.substring(0, diffCharIndex);
-    	    String beforeDiffChar2 = shorterWord.substring(0, diffCharIndex);
-    	    String afterDiffChar1 = longerWord.substring(diffCharIndex + 1, longerWord.length());
-    	    String afterDiffChar2 = shorterWord.substring(diffCharIndex, shorterWord.length());
-    	    
-    	    if (!(beforeDiffChar1.equals(beforeDiffChar2)) || !(afterDiffChar1.equals(afterDiffChar2))) {
-    	        return false;
-    	    }
-	    }
-    
-		return true;	
+                // Check addition and deletion
+	        int diffCharIndex = 0;
+	        String longerWord = word1.length() > word2.length() ? word1 : word2;
+	        String shorterWord = word1.length() < word2.length() ? word1 : word2;
+
+	        // Look for the index where the two words are starting to differ
+	        for (int i = 0; i < longerWord.length(); i++) {
+	            if (word1.charAt(i) != word2.charAt(i)) {
+		    diffCharIndex = i;
+		    break;
+		    }
+		}
+
+	        String beforeDiffChar1 = longerWord.substring(0, diffCharIndex);
+	        String beforeDiffChar2 = shorterWord.substring(0, diffCharIndex);
+	        String afterDiffChar1 = longerWord.substring(diffCharIndex + 1, longerWord.length());
+	        String afterDiffChar2 = shorterWord.substring(diffCharIndex, shorterWord.length());
+
+	        if (!(beforeDiffChar1.equals(beforeDiffChar2)) || !(afterDiffChar1.equals(afterDiffChar2))) {
+	            return false;
+		}
+	    }      
+	    return true;	
 	}
 	
 	public static void main(String[] args) {
