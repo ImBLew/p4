@@ -42,15 +42,6 @@ public class Graph<E> implements GraphADT<E> {
         
         Vertices.add(vertex);
         Matrix.add(new ArrayList<Integer>(Vertices.size()));
-        //size()-1 because don't need to add edges for itself
-        for(int i = 0; i< Vertices.size()-1;i++) {
-        	if(WordProcessor.isAdjacent(vertex.toString(), Vertices.get(i).toString())){
-        		Matrix.get(Vertices.size()).set(i,1);
-        	}
-        	else {
-        		Matrix.get(Vertices.size()).set(i,0);
-        	}
-        }
         
         return vertex;
     }
@@ -176,7 +167,7 @@ public class Graph<E> implements GraphADT<E> {
     		}
     	}
   
-    	if(count == 2) {
+    	if(count >= 2) {
     		if(Matrix.get(xCor).get(yCor) == 1)    			
     		return true;
     	}
