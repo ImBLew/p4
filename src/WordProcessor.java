@@ -109,7 +109,7 @@ public class WordProcessor {
                     return false;
             }
         } 
-        // If the two words' length differ by 1, check of addition or deletion
+        // If the two words' length differ by 1, check for addition or deletion
         else {
             // If word2 is longer than word1
             if (w2.length > w1.length) {
