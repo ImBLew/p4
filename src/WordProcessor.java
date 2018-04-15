@@ -67,7 +67,7 @@ public class WordProcessor {
 		 * 		streamOfLines.map(...).filter(a -> ...).map(...) and so on
 		 */
 	    
-	    Stream<String> stream = Files.lines(Paths.get(filepath)).filter(x-> !x.equals("") && x!=null && !x.isEmpty()).map(String::trim).map(String::toUpperCase);
+	    Stream<String> stream = Files.lines(Paths.get(filepath)).filter(x-> !x.equals("") || x!=null).map(String::trim).map(String::toUpperCase);
 
 	    return stream;
 	}
@@ -75,7 +75,7 @@ public class WordProcessor {
 	/**
 	 * Adjacency between word1 and word2 is defined by:
 	 * if the difference between word1 and word2 is of
-	 *  1 char replacement
+	 * 	1 char replacement
 	 *  1 char addition
 	 *  1 char deletion
 	 * then 
@@ -128,29 +128,42 @@ public class WordProcessor {
 	    }
 	    
 	    if (word1.length() != word2.length()) {
-                // Check addition and deletion
-	        int diffCharIndex = 0;
-	        String longerWord = word1.length() > word2.length() ? word1 : word2;
-	        String shorterWord = word1.length() < word2.length() ? word1 : word2;
+	        
 
-	        // Look for the index where the two words are starting to differ
-	        for (int i = 0; i < longerWord.length(); i++) {
-	            if (word1.charAt(i) != word2.charAt(i)) {
-		        diffCharIndex = i;
-		        break;
-		    }
-		}
-
-	        String beforeDiffChar1 = longerWord.substring(0, diffCharIndex);
-	        String beforeDiffChar2 = shorterWord.substring(0, diffCharIndex);
-	        String afterDiffChar1 = longerWord.substring(diffCharIndex + 1, longerWord.length());
-	        String afterDiffChar2 = shorterWord.substring(diffCharIndex, shorterWord.length());
-
-	        if (!(beforeDiffChar1.equals(beforeDiffChar2)) || !(afterDiffChar1.equals(afterDiffChar2))) {
-	            return false;
-		}
-	    }      
-	    return true;	
+    	    // Check addition and deletion
+    	    int diffCharIndex = 0;
+    	    String longerWord = word1.length() > word2.length() ? word1 : word2;
+    	    String shorterWord = word1.length() < word2.length() ? word1 : word2;
+    	    
+            if (longerWord.length() == 2 && shorterWord.length() == 1) {
+                for (int i = 0; i < longerWord.length(); i++) {
+                    Character a = longerWord.charAt(i);
+                    if (shorterWord.equals(a.toString())) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+    	    
+    	    // Look for the index where the two words are starting to differ
+    	    for (int i = 0; i < longerWord.length(); i++) {
+    	        if (word1.charAt(i) != word2.charAt(i)) {
+    	            diffCharIndex = i;
+    	            break;
+    	        }
+    	    }
+    	    
+    	    String beforeDiffChar1 = longerWord.substring(0, diffCharIndex);
+    	    String beforeDiffChar2 = shorterWord.substring(0, diffCharIndex);
+    	    String afterDiffChar1 = longerWord.substring(diffCharIndex + 1, longerWord.length());
+    	    String afterDiffChar2 = shorterWord.substring(diffCharIndex, shorterWord.length());
+    	    
+    	    if (!(beforeDiffChar1.equals(beforeDiffChar2)) || !(afterDiffChar1.equals(afterDiffChar2))) {
+    	        return false;
+    	    }
+	    }
+    
+		return true;	
 	}
 	
 	public static void main(String[] args) {
@@ -163,12 +176,15 @@ public class WordProcessor {
 //	        e.printStackTrace();
 //	    }
 
-	    
+	    System.out.println(isAdjacent("A","AC"));
+	    System.out.println(isAdjacent("AB","GAB"));
 	    System.out.println(isAdjacent("meet","met"));
 	    System.out.println(isAdjacent("met","met"));
 	    System.out.println(isAdjacent("heiah","heaih"));
 	    System.out.println(isAdjacent("were","where"));
-	    
+	    System.out.println(isAdjacent("e","r"));
+
 	}
 	
 }
+
