@@ -67,7 +67,7 @@ public class WordProcessor {
 		 * 		streamOfLines.map(...).filter(a -> ...).map(...) and so on
 		 */
 	    
-	    Stream<String> stream = Files.lines(Paths.get(filepath)).filter(x-> !x.equals("") && x!=null).map(String::trim).map(String::toUpperCase);
+	    Stream<String> stream = Files.lines(Paths.get(filepath)).filter(x-> !x.equals("") || x!=null).map(String::trim).map(String::toUpperCase);
 
 	    return stream;
 	}
@@ -136,8 +136,8 @@ public class WordProcessor {
 	        // Look for the index where the two words are starting to differ
 	        for (int i = 0; i < longerWord.length(); i++) {
 	            if (word1.charAt(i) != word2.charAt(i)) {
-		    diffCharIndex = i;
-		    break;
+		        diffCharIndex = i;
+		        break;
 		    }
 		}
 
