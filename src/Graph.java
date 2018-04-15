@@ -202,6 +202,8 @@ public class Graph<E> implements GraphADT<E> {
     	
     	for(int i = 0; i < Matrix.get(index).size(); i++) {
     		if(Matrix.get(index).get(i) == 1) {
+    		    if (Vertices.get(i).equals(vertex))
+    		        continue;
     			neighbors.add(Vertices.get(i));
     		}
     	}
