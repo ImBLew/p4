@@ -35,13 +35,16 @@ public class Graph<E> implements GraphADT<E> {
         if (vertex == null)
         	return null;
         
-        for(int i =0; i< Vertices.size(); i++) {
+        for(int i = 0; i < Vertices.size(); i++) {
         	if(Vertices.get(i).equals(vertex))
         		return null;
         }
-        
         Vertices.add(vertex);
         Matrix.add(new ArrayList<Integer>(Vertices.size()));
+        for (int i = 0; i < Vertices.size(); i++) {
+            Matrix.get(Vertices.size() - 1).add(i, 0);
+            Matrix.get(i).add(Vertices.size() - 1, 0);
+        }
         
         return vertex;
     }
@@ -55,12 +58,12 @@ public class Graph<E> implements GraphADT<E> {
         	return null;
         
         //likely to have bugs
-        for(int i = 0;i<Vertices.size(); i++) {
+        for(int i = 0; i < Vertices.size(); i++) {
         	//.equals could be causing a problem
         	if(Vertices.get(i).equals(vertex)) {
         		Matrix.remove(i);
         		for(int j=0; j < Matrix.size(); j++) {
-        			Matrix.get(j).remove(i+1);
+        			Matrix.get(j).remove(i);
         		}
         		return vertex;
         	}
@@ -81,11 +84,12 @@ public class Graph<E> implements GraphADT<E> {
     	int xCor = 0;
     	int yCor = 0;
     	//checks if first vertex is in graph
-    	for(int i =0;i<Vertices.size();i++) {
+    	for(int i = 0; i < Vertices.size(); i++) {
     		//.equals could be causing a problem
     		if(Vertices.get(i).equals(vertex1)) {
     			count++;
     			xCor = i;
+    			break;
     		}
     	}
     	//checks if second vertex is in graph
@@ -94,11 +98,13 @@ public class Graph<E> implements GraphADT<E> {
     		if(Vertices.get(i).equals(vertex2)) {
     			count++;
     			yCor = i;
+    			break;
     		}
     	}
   
     	if(count == 2) {
-    		Matrix.get(xCor).set(yCor,1);    			
+    		Matrix.get(xCor).set(yCor,1);
+    		Matrix.get(yCor).set(xCor, 1);
     		return true;
     	}
         return false;
@@ -133,7 +139,8 @@ public class Graph<E> implements GraphADT<E> {
     	}
   
     	if(count == 2) {
-    		Matrix.get(xCor).set(yCor,0);    			
+    		Matrix.get(xCor).set(yCor,0);
+    		Matrix.get(yCor).set(xCor,0);
     		return true;
     	}
         return false;
@@ -169,7 +176,7 @@ public class Graph<E> implements GraphADT<E> {
   
     	if(count >= 2) {
     		if(Matrix.get(xCor).get(yCor) == 1)    			
-    		return true;
+    		    return true;
     	}
         return false;  	
     }
