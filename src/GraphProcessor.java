@@ -1,6 +1,6 @@
-///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 //                   
-// Class File:  	 GraphProcessor.java
+// Class File:       GraphProcessor.java
 // Semester:         Spring 2018
 //
 // Author:           Yaakov Levin, Anthony Leung, Haoran Li, Ben Lewis
@@ -21,31 +21,6 @@ import java.util.stream.Stream;
 
 /**
  * This class adds additional functionality to the graph as a whole.
- * 
- * Contains an instance variable, {@link #graph}, which stores information for all the vertices and edges.
- * @see #populateGraph(String)
- *  - loads a dictionary of words as vertices in the graph.
- *  - finds possible edges between all pairs of vertices and adds these edges in the graph.
- *  - returns number of vertices added as Integer.
- *  - every call to this method will add to the existing graph.
- *  - this method needs to be invoked first for other methods on shortest path computation to work.
- * @see #shortestPathPrecomputation()
- *  - applies a shortest path algorithm to precompute data structures (that store shortest path data)
- *  - the shortest path data structures are used later to 
- *    to quickly find the shortest path and distance between two vertices.
- *  - this method is called after any call to populateGraph.
- *  - It is not called again unless new graph information is added via populateGraph().
- * @see #getShortestPath(String, String)
- *  - returns a list of vertices that constitute the shortest path between two given vertices, 
- *    computed using the precomputed data structures computed as part of {@link #shortestPathPrecomputation()}.
- *  - {@link #shortestPathPrecomputation()} must have been invoked once before invoking this method.
- * @see #getShortestDistance(String, String)
- *  - returns distance (number of edges) as an Integer for the shortest path between two given vertices
- *  - this is computed using the precomputed data structures computed as part of {@link #shortestPathPrecomputation()}.
- *  - {@link #shortestPathPrecomputation()} must have been invoked once before invoking this method.
- *  
- * 
- * 
  */
 public class GraphProcessor {
     
@@ -55,7 +30,7 @@ public class GraphProcessor {
         String predecessor;
         
         public vertexNode(String vertex) {
-            vertex = this.vertex;
+            this.vertex = vertex;
             weight = Integer.MAX_VALUE;
         }
         
@@ -167,7 +142,7 @@ public class GraphProcessor {
      * @return Integer distance
      */
     public Integer getShortestDistance(String word1, String word2) {
-        return shortestPath.get(word1 + "|" + word2).size();
+        return shortestPath.get(word1 + "|" + word2).size() - 1;
     }
     
     /**
@@ -179,13 +154,20 @@ public class GraphProcessor {
         Iterator<String> vertices = graph.getAllVertices().iterator();
         while(vertices.hasNext()) {
             String root = vertices.next();
-            LinkedList<vertexNode> pathList = generatePathList(root);
+            ArrayList<vertexNode> pathList = generatePathList(root);
             buildMap(pathList, root);
         }
     }
     
-    private LinkedList<vertexNode> generatePathList(String root){
-        LinkedList<vertexNode> table = new LinkedList<vertexNode>();
+    /**
+     * Using Djikstra's Algorithm to calculate the shortest path to all reachable vertices
+     * 
+     * @param root the starting word of path
+     * @return the whole tree containing all the vertex reachable from root
+     */
+    private ArrayList<vertexNode> generatePathList(String root){
+        ArrayList<vertexNode> table = new ArrayList<vertexNode>();
+        ArrayList<vertexNode> removedNode = new ArrayList<vertexNode>();
         
         Iterator<String> vertices = graph.getAllVertices().iterator();
         while(vertices.hasNext())
@@ -199,30 +181,44 @@ public class GraphProcessor {
                     return n1.weight - n2.weight;
                 }
             })));
+            if (current.weight == Integer.MAX_VALUE)
+                break;
+            removedNode.add(current);
             Iterator<String> successors = graph.getNeighbors(current.vertex).iterator();
             while(successors.hasNext()) {
-                int position = table.indexOf(new vertexNode(successors.next()));
+                String temp = successors.next();
+                if (removedNode.contains(new vertexNode(temp)))
+                    continue;
+                int position = table.indexOf(new vertexNode(temp));
                 if (table.get(position).weight > (current.weight + 1)) {
                     table.get(position).predecessor = current.vertex;
                     table.get(position).weight = current.weight + 1;
                 }
             }
         }
-        return table;
+        return removedNode;
     }
     
-    private void buildMap(LinkedList<vertexNode> pathList, String root) {
+    /**
+     * build the path list from starting word to target word from the given tree
+     * 
+     * @param pathList the whole tree containing all the vertex reachable from root
+     * @param root the starting word of path
+     */
+    private void buildMap(ArrayList<vertexNode> pathList, String root) {
         Iterator<String> vertices = graph.getAllVertices().iterator();
         while(vertices.hasNext()) {
             ArrayList<String> wordList = new ArrayList<String>();
             String target = vertices.next();
-            String predecessor = target;
-            while(predecessor != null) {
-                wordList.add(predecessor);
-                predecessor = pathList.get(pathList.indexOf(new vertexNode(predecessor))).predecessor;
+            if (pathList.contains((new vertexNode(target)))) {
+                String predecessor = target;
+                while(predecessor != null) {
+                    wordList.add(predecessor);
+                    predecessor = pathList.get(pathList.indexOf(new vertexNode(predecessor))).predecessor;
+                }
+                Collections.reverse(wordList);
+                shortestPath.put(root + "|" + target, wordList);
             }
-            Collections.reverse(wordList);
-            shortestPath.put(root + "|" + target, wordList);
         }
     }
 }
