@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 //                   
-// Class File:  	 Graph.java
+// Class File:  	 GraphProcessor.java
 // Semester:         Spring 2018
 //
 // Author:           Yaakov Levin, Anthony Leung, Haoran Li, Ben Lewis
@@ -44,7 +44,7 @@ import java.util.stream.Stream;
  *  - this is computed using the precomputed data structures computed as part of {@link #shortestPathPrecomputation()}.
  *  - {@link #shortestPathPrecomputation()} must have been invoked once before invoking this method.
  *  
- * @author sapan (sapan@cs.wisc.edu)
+ * 
  * 
  */
 public class GraphProcessor {
