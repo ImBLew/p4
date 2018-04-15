@@ -188,14 +188,20 @@ public class Graph<E> implements GraphADT<E> {
     @Override
     public Iterable<E> getNeighbors(E vertex) {
     	ArrayList<E> neighbors = new ArrayList<E>();
-    	int index = 0;
-    	for(int i =0; i<Vertices.size(); i++) {
-    		if(Vertices.get(i).equals(vertex))
+    	int index = -1;
+    	for(int i = 0; i < Vertices.size(); i++) {
+    		if(Vertices.get(i).equals(vertex)) {
     			index = i;
+    			break;
+    		}
+    	}
+    	//index of -1 means vertex does not exist
+    	if (index == -1) {
+    	    return null;
     	}
     	
-    	for(int i=0; i<Matrix.get(index).size();i++) {
-    		if(Matrix.get(index).get(i)==1) {
+    	for(int i = 0; i < Matrix.get(index).size(); i++) {
+    		if(Matrix.get(index).get(i) == 1) {
     			neighbors.add(Vertices.get(i));
     		}
     	}
