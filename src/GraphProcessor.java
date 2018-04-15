@@ -1,10 +1,13 @@
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -36,7 +39,37 @@ import java.util.stream.Stream;
  * 
  */
 public class GraphProcessor {
-
+    
+    protected class vertexNode{
+        String vertex;
+        int weight;
+        String predecessor;
+        
+        public vertexNode(String vertex) {
+            vertex = this.vertex;
+            weight = Integer.MAX_VALUE;
+        }
+        
+        @Override
+        public boolean equals(Object n) {
+            if (n instanceof vertexNode) {
+                if (((vertexNode) n).vertex == this.vertex)
+                    return true;
+                else
+                    return false;
+            } else {
+                return false;
+            }
+        }
+    }
+    
+    private int numOfVertices;
+    
+    /**
+     * Data structure to hold shortest path between every vertices
+     */
+    HashMap<String, ArrayList<String>> shortestPath = new HashMap<String, ArrayList<String>>();
+    
     /**
      * Graph which stores the dictionary words and their associated connections
      */
@@ -46,7 +79,7 @@ public class GraphProcessor {
      * Constructor for this class. Initializes instances variables to set the starting state of the object
      */
     public GraphProcessor() {
-        this.graph = new Graph<>();
+        this.graph = new Graph<String>();
     }
         
     /**
@@ -62,10 +95,26 @@ public class GraphProcessor {
      * 
      * @param filepath file path to the dictionary
      * @return Integer the number of vertices (words) added
+     * @throws IOException 
      */
     public Integer populateGraph(String filepath) {
-        return 0;
-    
+        Stream<String> wordStream;
+        try {
+            wordStream = WordProcessor.getWordStream(filepath);
+            List<String> wordString = wordStream.collect(Collectors.toList());
+            this.numOfVertices = wordString.size();
+            
+            for(String word : wordString)
+                graph.addVertex(word);
+            
+            for(String word1 : wordString)
+                for(String word2 : wordString)
+                    if (WordProcessor.isAdjacent(word1, word2))
+                        graph.addEdge(word1, word2);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return numOfVertices;
     }
 
     
@@ -87,7 +136,7 @@ public class GraphProcessor {
      * @return List<String> list of the words
      */
     public List<String> getShortestPath(String word1, String word2) {
-        return null;
+        return shortestPath.get(word1 + "|" + word2);
     
     }
     
@@ -109,7 +158,7 @@ public class GraphProcessor {
      * @return Integer distance
      */
     public Integer getShortestDistance(String word1, String word2) {
-        return null;
+        return shortestPath.get(word1 + "|" + word2).size();
     }
     
     /**
@@ -118,6 +167,53 @@ public class GraphProcessor {
      * Any shortest path algorithm can be used (Djikstra's or Floyd-Warshall recommended).
      */
     public void shortestPathPrecomputation() {
+        Iterator<String> vertices = graph.getAllVertices().iterator();
+        while(vertices.hasNext()) {
+            String root = vertices.next();
+            LinkedList<vertexNode> pathList = generatePathList(root);
+            buildMap(pathList, root);
+        }
+    }
     
+    private LinkedList<vertexNode> generatePathList(String root){
+        LinkedList<vertexNode> table = new LinkedList<vertexNode>();
+        
+        Iterator<String> vertices = graph.getAllVertices().iterator();
+        while(vertices.hasNext())
+            table.add(new vertexNode(vertices.next()));
+        
+        table.get(table.indexOf(new vertexNode(root))).weight = 0;
+        
+        while(!table.isEmpty()) {
+            vertexNode current = table.remove(table.indexOf(Collections.min(table, new Comparator<vertexNode>() {
+                public int compare(vertexNode n1, vertexNode n2) {
+                    return n1.weight - n2.weight;
+                }
+            })));
+            Iterator<String> successors = graph.getNeighbors(current.vertex).iterator();
+            while(successors.hasNext()) {
+                int position = table.indexOf(new vertexNode(successors.next()));
+                if (table.get(position).weight > (current.weight + 1)) {
+                    table.get(position).predecessor = current.vertex;
+                    table.get(position).weight = current.weight + 1;
+                }
+            }
+        }
+        return table;
+    }
+    
+    private void buildMap(LinkedList<vertexNode> pathList, String root) {
+        Iterator<String> vertices = graph.getAllVertices().iterator();
+        while(vertices.hasNext()) {
+            ArrayList<String> wordList = new ArrayList<String>();
+            String target = vertices.next();
+            String predecessor = target;
+            while(predecessor != null) {
+                wordList.add(predecessor);
+                predecessor = pathList.get(pathList.indexOf(new vertexNode(predecessor))).predecessor;
+            }
+            Collections.reverse(wordList);
+            shortestPath.put(root + "|" + target, wordList);
+        }
     }
 }
