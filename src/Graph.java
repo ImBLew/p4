@@ -35,11 +35,15 @@ public class Graph<E> implements GraphADT<E> {
         if (vertex == null)
         	return null;
         
+        //Ensures doesn't add duplicate vertex
         for(int i = 0; i < Vertices.size(); i++) {
         	if(Vertices.get(i).equals(vertex))
         		return null;
         }
+        
         Vertices.add(vertex);
+        
+        //Adds new row/column of 0's for adjacency matrix to utilize
         Matrix.add(new ArrayList<Integer>(Vertices.size()));
         for (int i = 0; i < Vertices.size(); i++) {
             Matrix.get(Vertices.size() - 1).add(i, 0);
@@ -57,14 +61,17 @@ public class Graph<E> implements GraphADT<E> {
         if(vertex == null)		
         	return null;
         
-        //likely to have bugs
         for(int i = 0; i < Vertices.size(); i++) {
-        	//.equals could be causing a problem
+            
+            //Finds vertex in Vertices ArrayList
         	if(Vertices.get(i).equals(vertex)) {
+        	    
+        	    //Removes row/column from adjacency matrix
         		Matrix.remove(i);
         		for(int j=0; j < Matrix.size(); j++) {
         			Matrix.get(j).remove(i);
         		}
+        		
         		Vertices.remove(i);
         		return vertex;
         	}
@@ -86,7 +93,6 @@ public class Graph<E> implements GraphADT<E> {
     	int yCor = 0;
     	//checks if first vertex is in graph
     	for(int i = 0; i < Vertices.size(); i++) {
-    		//.equals could be causing a problem
     		if(Vertices.get(i).equals(vertex1)) {
     			count++;
     			xCor = i;
@@ -95,15 +101,15 @@ public class Graph<E> implements GraphADT<E> {
     	}
     	//checks if second vertex is in graph
     	for(int i =0;i<Vertices.size();i++) {
-    		//.equals could be causing a problem
     		if(Vertices.get(i).equals(vertex2)) {
     			count++;
     			yCor = i;
     			break;
     		}
     	}
-  
+    	//count == 2 means both vertices are in graph
     	if(count == 2) {
+    	    //adjacency matrix reflects across y = x
     		Matrix.get(xCor).set(yCor,1);
     		Matrix.get(yCor).set(xCor, 1);
     		return true;
@@ -124,7 +130,6 @@ public class Graph<E> implements GraphADT<E> {
     	int yCor = 0;
     	//checks if first vertex is in graph
     	for(int i =0;i<Vertices.size();i++) {
-    		//.equals could be causing a problem
     		if(Vertices.get(i).equals(vertex1)) {
     			count++;
     			xCor = i;
@@ -132,14 +137,15 @@ public class Graph<E> implements GraphADT<E> {
     	}
     	//checks if second vertex is in graph
     	for(int i =0;i<Vertices.size();i++) {
-    		//.equals could be causing a problem
     		if(Vertices.get(i).equals(vertex2)) {
     			count++;
     			yCor = i;
     		}
     	}
-  
+
+    	//count == 2 means both vertices are in graph
     	if(count == 2) {
+            //adjacency matrix reflects across y = x
     		Matrix.get(xCor).set(yCor,0);
     		Matrix.get(yCor).set(xCor,0);
     		return true;
@@ -160,7 +166,6 @@ public class Graph<E> implements GraphADT<E> {
     	int yCor = 0;
     	//checks if first vertex is in graph
     	for(int i =0;i<Vertices.size();i++) {
-    		//.equals could be causing a problem
     		if(Vertices.get(i).equals(vertex1)) {
     			count++;
     			xCor = i;
@@ -168,14 +173,15 @@ public class Graph<E> implements GraphADT<E> {
     	}
     	//checks if second vertex is in graph
     	for(int i =0;i<Vertices.size();i++) {
-    		//.equals could be causing a problem
     		if(Vertices.get(i).equals(vertex2)) {
     			count++;
     			yCor = i;
     		}
     	}
-  
-    	if(count >= 2) {
+
+    	//count == 2 means both vertices are in graph
+    	if(count == 2) {
+    	    // 1 in adjacency matrix means vertices are adjacent
     		if(Matrix.get(xCor).get(yCor) == 1)    			
     		    return true;
     	}
@@ -189,6 +195,8 @@ public class Graph<E> implements GraphADT<E> {
     public Iterable<E> getNeighbors(E vertex) {
     	ArrayList<E> neighbors = new ArrayList<E>();
     	int index = -1;
+    	
+    	//Finds vertex in Vertices ArrayList
     	for(int i = 0; i < Vertices.size(); i++) {
     		if(Vertices.get(i).equals(vertex)) {
     			index = i;
@@ -200,8 +208,11 @@ public class Graph<E> implements GraphADT<E> {
     	    return null;
     	}
     	
+    	//Goes through vertex's column in adjacency matrix
     	for(int i = 0; i < Matrix.get(index).size(); i++) {
+    	    //Checks if there's a neighbor at each spot
     		if(Matrix.get(index).get(i) == 1) {
+    		    //Ensures does not pass self as neighbor
     		    if (Vertices.get(i).equals(vertex))
     		        continue;
     			neighbors.add(Vertices.get(i));
