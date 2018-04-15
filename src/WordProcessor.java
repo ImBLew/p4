@@ -128,26 +128,29 @@ public class WordProcessor {
 	    }
 	    
 	    if (word1.length() != word2.length()) {
+	        // Check addition and deletion
+	        int diffCharIndex = 0;
+            String longerWord = word1.length() > word2.length() ? word1 : word2;
+            String shorterWord = word1.length() < word2.length() ? word1 : word2;
+            
+	        // Check if the difference occurs at the last char
+	        if (longerWord.charAt(longerWord.length()-1) != shorterWord.charAt(shorterWord.length()-1)) {
+	            if (longerWord.substring(0,longerWord.length() -2).equals(shorterWord.substring(0,longerWord.length() -2))) {
+	             return true;   
+	            }       
+	        }
 	        
-
-    	    // Check addition and deletion
-    	    int diffCharIndex = 0;
-    	    String longerWord = word1.length() > word2.length() ? word1 : word2;
-    	    String shorterWord = word1.length() < word2.length() ? word1 : word2;
-    	    
-            if (longerWord.length() == 2 && shorterWord.length() == 1) {
-                for (int i = 0; i < longerWord.length(); i++) {
-                    Character a = longerWord.charAt(i);
-                    if (shorterWord.equals(a.toString())) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-    	    
+	        // Check if the difference occurs at the first char
+	        if (longerWord.charAt(0) != shorterWord.charAt(0)) {
+	            if (longerWord.substring(1,longerWord.length()-1).equals(shorterWord.substring(1,longerWord.length()-1))) {
+	                return true;   
+	            }       
+	        }
+	        // Check if the difference occurs in the middle 
+	        	    
     	    // Look for the index where the two words are starting to differ
-    	    for (int i = 0; i < longerWord.length(); i++) {
-    	        if (word1.charAt(i) != word2.charAt(i)) {
+    	    for (int i = 0; i < longerWord.length()-1; i++) {
+    	        if (longerWord.charAt(i) != shorterWord.charAt(i)) {
     	            diffCharIndex = i;
     	            break;
     	        }
@@ -157,7 +160,7 @@ public class WordProcessor {
     	    String beforeDiffChar2 = shorterWord.substring(0, diffCharIndex);
     	    String afterDiffChar1 = longerWord.substring(diffCharIndex + 1, longerWord.length());
     	    String afterDiffChar2 = shorterWord.substring(diffCharIndex, shorterWord.length());
-    	    
+    	    	    
     	    if (!(beforeDiffChar1.equals(beforeDiffChar2)) || !(afterDiffChar1.equals(afterDiffChar2))) {
     	        return false;
     	    }
@@ -175,14 +178,13 @@ public class WordProcessor {
 //	    } catch (Exception e ) { 
 //	        e.printStackTrace();
 //	    }
-
-	    System.out.println(isAdjacent("A","AC"));
-	    System.out.println(isAdjacent("AB","GAB"));
-	    System.out.println(isAdjacent("meet","met"));
-	    System.out.println(isAdjacent("met","met"));
-	    System.out.println(isAdjacent("heiah","heaih"));
-	    System.out.println(isAdjacent("were","where"));
-	    System.out.println(isAdjacent("e","r"));
+//
+	    System.out.println(isAdjacent("CAT","CA"));
+        System.out.println(isAdjacent("CAT","CT"));
+        System.out.println(isAdjacent("CAT","AT"));
+	    System.out.println(isAdjacent("CHART","CHCRC"));
+	    
+	    
 
 	}
 	
