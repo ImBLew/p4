@@ -1,9 +1,7 @@
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
-import java.util.*;
 
 /**
  * This class contains some utility helper methods
@@ -66,127 +64,70 @@ public class WordProcessor {
 		 * Note: since map and filter return the updated Stream objects, they can chained together as:
 		 * 		streamOfLines.map(...).filter(a -> ...).map(...) and so on
 		 */
+		
+	    Stream<String> wordStream = Files.lines(Paths.get(filepath)).map(String::toUpperCase).filter(x -> x != "" && !x.isEmpty());
 	    
-	    Stream<String> stream = Files.lines(Paths.get(filepath)).filter(x-> !x.equals("") || x!=null).map(String::trim).map(String::toUpperCase);
-
-	    return stream;
+		return wordStream;
 	}
 	
-	/**
-	 * Adjacency between word1 and word2 is defined by:
-	 * if the difference between word1 and word2 is of
-	 * 	1 char replacement
-	 *  1 char addition
-	 *  1 char deletion
-	 * then 
-	 *  word1 and word2 are adjacent
-	 * else
-	 *  word1 and word2 are not adjacent
-	 *  
-	 * Note: if word1 is equal to word2, they are not adjacent
-	 * 
-	 * @param word1 first word
-	 * @param word2 second word
-	 * @return true if word1 and word2 are adjacent else false
-	 */
-	public static boolean isAdjacent(String word1, String word2) {
-        int numDiffChar = 0;
-
-	    if (word1.equals(word2)) {
-	        return false;
-	    }
-	    
-	    int lengthDiff = Math.abs(word1.length() - word2.length());
-	    if (lengthDiff > 1) {
-	        return false; 
-	    }
-	    // Check replacement 
-	    if (word1.length() == word2.length()) {
-	        int wordLength = word1.length();
-	        
-	        for (int i = 0, j = wordLength -1, counter = 0; counter <= wordLength/2; i++, j--, counter++) {
-	            char left1 = word1.charAt(i);
-	            char right1 = word1.charAt(j);
-	            char left2 = word2.charAt(i);
-	            char right2 = word2.charAt(j);
-	            
-	            if (left1 != left2) {
-	                numDiffChar++;
-	            }	   
-	            
-	            // Avoid checking on the middle char if the length of words are odd
-	            if (i != j) {
-	                if (right1 != right2) {
-	                    numDiffChar++;
-	                }
-	            }
-  
-	            if (numDiffChar > 1) {
-	                return false;
-	            }
-	        }
-	    }
-	    
-	    if (word1.length() != word2.length()) {
-	        // Check addition and deletion
-	        int diffCharIndex = 0;
-            String longerWord = word1.length() > word2.length() ? word1 : word2;
-            String shorterWord = word1.length() < word2.length() ? word1 : word2;
-            
-	        // Check if the difference occurs at the last char
-	        if (longerWord.charAt(longerWord.length()-1) != shorterWord.charAt(shorterWord.length()-1)) {
-	            if (longerWord.substring(0,longerWord.length() -2).equals(shorterWord.substring(0,longerWord.length() -2))) {
-	             return true;   
-	            }       
-	        }
-	        
-	        // Check if the difference occurs at the first char
-	        if (longerWord.charAt(0) != shorterWord.charAt(0)) {
-	            if (longerWord.substring(1,longerWord.length()-1).equals(shorterWord.substring(1,longerWord.length()-1))) {
-	                return true;   
-	            }       
-	        }
-	        // Check if the difference occurs in the middle 
-	        	    
-    	    // Look for the index where the two words are starting to differ
-    	    for (int i = 0; i < longerWord.length()-1; i++) {
-    	        if (longerWord.charAt(i) != shorterWord.charAt(i)) {
-    	            diffCharIndex = i;
-    	            break;
-    	        }
-    	    }
-    	    
-    	    String beforeDiffChar1 = longerWord.substring(0, diffCharIndex);
-    	    String beforeDiffChar2 = shorterWord.substring(0, diffCharIndex);
-    	    String afterDiffChar1 = longerWord.substring(diffCharIndex + 1, longerWord.length());
-    	    String afterDiffChar2 = shorterWord.substring(diffCharIndex, shorterWord.length());
-    	    	    
-    	    if (!(beforeDiffChar1.equals(beforeDiffChar2)) || !(afterDiffChar1.equals(afterDiffChar2))) {
-    	        return false;
-    	    }
-	    }
-    
-		return true;	
-	}
-	
-	public static void main(String[] args) {
-//	    try {
-//	        Stream<String> stream = getWordStream("word_list.txt");
-//	        Object[] string = stream.toArray();
-//	        for (Object o : string)
-//	            System.out.println(o);
-//	    } catch (Exception e ) { 
-//	        e.printStackTrace();
-//	    }
-//
-	    System.out.println(isAdjacent("CAT","CA"));
-            System.out.println(isAdjacent("CAT","CT"));
-            System.out.println(isAdjacent("CAT","AT"));
-	    System.out.println(isAdjacent("CHART","CHCRC"));
-	    
-	    
-
-	}
-	
+    /**
+     * Adjacency between word1 and word2 is defined by:
+     * if the difference between word1 and word2 is of
+     *  1 char replacement
+     *  1 char addition
+     *  1 char deletion
+     * then 
+     *  word1 and word2 are adjacent
+     * else
+     *  word1 and word2 are not adjacent
+     *  
+     * Note: if word1 is equal to word2, they are not adjacent
+     * 
+     * @param word1 first word
+     * @param word2 second word
+     * @return true if word1 and word2 are adjacent else false
+     */
+    public static boolean isAdjacent(String word1, String word2) {
+        char[] w1 = word1.toCharArray();
+        char[] w2 = word2.toCharArray();
+        if (Math.abs(w1.length - w2.length) > 1)
+            return false;
+        if (w1.length == w2.length) {
+            int count = 0;
+            for (int i = 0; i < w1.length; i++) {
+                if (w1[i] != w2[i])
+                    count++;
+                if (count > 1)
+                    return false;
+            }
+        } else {
+            if (w2.length > w1.length) {
+                int count = 0;
+                for (int i = 0; i < w1.length; i++) {
+                    if (w2[i + count] != w1[i]) {
+                        if (count != 0) {
+                            return false;
+                        } else {
+                            i--;
+                            count++;
+                        }
+                    }
+                        
+                }
+            } else {
+                int count = 0;
+                for (int i = 0; i < w2.length; i++) {
+                    if (w1[i + count] != w2[i]) {
+                        if (count != 0) {
+                            return false;
+                        } else {
+                            i--;
+                            count++;
+                        }
+                    }
+                }
+            }
+        }
+        return true;    
+    }
 }
-
