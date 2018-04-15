@@ -1,3 +1,12 @@
+///////////////////////////////////////////////////////////////////////////////
+//                   
+// Class File:  	 Graph.java
+// Semester:         Spring 2018
+//
+// Author:           Yaakov Levin, Anthony Leung, Haoran Li, Ben Lewis
+// Credits:          none
+/////////////////////////////////////////////////////////////////////////////////
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
