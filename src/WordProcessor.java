@@ -180,8 +180,8 @@ public class WordProcessor {
 //	    }
 //
 	    System.out.println(isAdjacent("CAT","CA"));
-        System.out.println(isAdjacent("CAT","CT"));
-        System.out.println(isAdjacent("CAT","AT"));
+            System.out.println(isAdjacent("CAT","CT"));
+            System.out.println(isAdjacent("CAT","AT"));
 	    System.out.println(isAdjacent("CHART","CHCRC"));
 	    
 	    
