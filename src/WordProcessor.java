@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 //                   
-// Class File: WordProcessor.java
+// Class File:       WordProcessor.java
 // Semester:         Spring 2018
 //
 // Author:           Yaakov Levin, Anthony Leung, Haoran Li, Ben Lewis
