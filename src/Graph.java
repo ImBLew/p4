@@ -65,6 +65,7 @@ public class Graph<E> implements GraphADT<E> {
         		for(int j=0; j < Matrix.size(); j++) {
         			Matrix.get(j).remove(i);
         		}
+        		Vertices.remove(i);
         		return vertex;
         	}
         }
